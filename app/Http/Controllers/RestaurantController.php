@@ -14,6 +14,7 @@ use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
 use Flash;
 use App\Models\Food;
+use App\Models\Tag;
 use App\Repositories\FoodRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -75,12 +76,13 @@ class RestaurantController extends Controller
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $usersSelected = [];
         $driversSelected = [];
+        $tags = Tag::all();
         $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
         if ($hasCustomField) {
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('restaurants.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected);
+        return view('restaurants.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('tags',$tags);
     }
 
     /**
@@ -93,12 +95,14 @@ class RestaurantController extends Controller
     public function store(CreateRestaurantRequest $request)
     {
         $input = $request->all();
-        if (auth()->user()->hasRole('manager')) {
+      /* if (auth()->user()->hasRole('manager')) {  //  fix the bug
             $input['users'] = [auth()->id()];
-        }
+        } */
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
             $restaurant = $this->restaurantRepository->create($input);
+            $tagsIDs = $request->tagsIDs;
+            $restaurant->tags()->sync($tagsIDs);
             $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
@@ -157,6 +161,9 @@ class RestaurantController extends Controller
         $usersSelected = $restaurant->users()->pluck('users.id')->toArray();
         $driversSelected = $restaurant->drivers()->pluck('users.id')->toArray();
 
+        $tags = Tag::all();
+        $tagsON = $restaurant->tags;
+
         if (empty($restaurant)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
 
@@ -169,7 +176,7 @@ class RestaurantController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('restaurants.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected);
+        return view('restaurants.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('tags',$tags)->with('tagsON',$tagsON);
     }
     
         public function clone($id)
@@ -250,6 +257,13 @@ class RestaurantController extends Controller
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
             $restaurant = $this->restaurantRepository->update($input, $id);
+            $tagsids = $request->tagsIDs;
+            if(empty($tagsids)) // test if array of ids is empty
+            {
+            $restaurant->tags()->sync([]);
+            }
+            else{
+            $restaurant->tags()->sync($tagsids);}
             $input['users'] = isset($input['users']) ? $input['users'] : [];
             $input['drivers'] = isset($input['drivers']) ? $input['drivers'] : [];
             if (isset($input['image']) && $input['image']) {

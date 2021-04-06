@@ -11,6 +11,13 @@
 |
 */
 
+
+
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
+
+
+
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::post('register', 'API\Driver\UserAPIController@register');
@@ -108,3 +115,7 @@ Route::middleware('auth:api')->group(function () {
 Route::get('coupons/{id}', 'API\CartAPIController@coupons');
 
 
+ //mcamara package
+// test api mcamara package (mcamara not work fine in api so we do it staticly)
+Route::get('getfoodbyid/{food_id}/{lang}','API\FoodOrderAPIController@getFoodOrderById'); //mcamara
+//Route::get('change/app/language/to/{lang}','API\FoodOrderAPIController@changeLangTo');

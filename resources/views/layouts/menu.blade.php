@@ -1,3 +1,13 @@
+
+<ul class="nav nav-tabs">
+@foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+        <li style="padding: 5px;" class="nav-item">
+            <a rel="alternate" hreflang="{{ $localeCode }}" href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
+                {{ $properties['native'] }}
+            </a>
+        </li>
+    @endforeach
+</ul>
 @can('dashboard') 
     <li class="nav-item">
         <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" href="{!! url('dashboard') !!}">@if($icons)
@@ -5,13 +15,13 @@
             <p>{{trans('lang.dashboard')}}</p></a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{!! url('show/all/users/not/admins') !!}">@if($icons)
+        <a class="nav-link {{ Request::is('show/all/users/not/admins*') ? 'active' : '' }}" href="{!! url('show/all/users/not/admins') !!}">@if($icons)
                 <i class="nav-icon fa fa-user-circle-o"></i>@endif
-            <p> المستخدمين</p></a>
+            <p> أدوار المستخدمين</p></a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="{!! url('show/requests') !!}">@if($icons)
+        <a class="nav-link {{ Request::is('show/requests*') ? 'active' : '' }}" href="{!! url('show/requests') !!}">@if($icons)
                 <i class="nav-icon fa fa-clipboard"></i>@endif
             <p>طلبات الإنضمام</p></a>
     </li>
@@ -59,6 +69,12 @@
                             <i class="nav-icon fa fa-comments"></i>@endif<p>{{trans('lang.restaurant_review_plural')}}</p></a>
                 </li>
            @endcan
+
+           <li class="nav-item">
+            <a class="nav-link" href="{{route('tags.index')}}">@if($icons)
+                     <i class="nav-icon fa fa-key"></i>@endif<p>نظام الكلمات المفتاحية</p></a>
+            </li>
+
                {{-- <li class="nav-item">
                     <a class="nav-link" href="{{route('show.map')}}">@if($icons)
                              <i class="nav-icon fa fa-map-marker"></i>@endif<p>الخريطة</p></a>
@@ -149,7 +165,7 @@
 @endcan
 @can('dashboard')
         <li class="nav-item">
-                    <a class="nav-link" href="{{route('records')}}">@if($icons)
+                    <a class="nav-link {{ Request::is('records*') ? 'active' : '' }} " href="{{route('records')}}">@if($icons)
                     <i class="nav-icon fa fa-sticky-note"></i>@endif
                           <p>التقارير </p></a>
         </li>

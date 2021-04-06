@@ -19,7 +19,9 @@ class Permissions
         'ResetPasswordController',
         'RegisterController',
         'PayPalController',
-        'Controller'
+        'Controller',
+        'PermissionsChangeController',
+        'TagController'
     ];
 
     /**

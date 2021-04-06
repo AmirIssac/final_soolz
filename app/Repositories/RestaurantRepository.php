@@ -17,7 +17,7 @@ use InfyOm\Generator\Common\BaseRepository;
  * @method Restaurant first($columns = ['*'])
  */
 class RestaurantRepository extends BaseRepository
-{
+{   
     /**
      * @var array
      */
@@ -32,6 +32,10 @@ class RestaurantRepository extends BaseRepository
         'information',
         'delivery_fee',
         'admin_commission',
+        'online_payment_check',
+        'cash_payment_check',
+        'start_at',
+        'end_at'
     ];
 
     /**

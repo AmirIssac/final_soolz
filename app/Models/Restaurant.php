@@ -52,6 +52,10 @@ class Restaurant extends Model implements HasMedia
         'delivery_fee',
         'enable',
         'available',
+        'online_payment_check',
+        'cash_payment_check',
+        'start_at',
+        'end_at',
         'information'
     ];
 
@@ -73,6 +77,10 @@ class Restaurant extends Model implements HasMedia
         'delivery_fee'=>'double',
         'enable'=>'boolean',
         'available'=>'boolean',
+        'online_payment_check'=>'boolean',
+        'cash_payment_check'=>'boolean',
+        'start_at'=>'time',
+        'end_at'=>'time',
         'information' => 'string'
     ];
 
@@ -83,7 +91,7 @@ class Restaurant extends Model implements HasMedia
      */
     public static $rules = [
         'name' => 'required',
-        'description' => 'required',
+       // 'description' => 'required',
         // 'image' => 'required',
         'address' => 'required',
         'phone' => 'required',
@@ -91,7 +99,6 @@ class Restaurant extends Model implements HasMedia
         'latitude' => 'required',
         'longitude' => 'required',
         'admin_commission' =>'required',
-        'delivery_fee'=>'required',
         'information' => 'required'
     ];
 
@@ -126,7 +133,7 @@ class Restaurant extends Model implements HasMedia
     {
         return $this->morphMany('App\Models\CustomFieldValue', 'customizable');
     }
-
+    
     /**
      * to generate media url in case of fallback will
      * return the file type icon
@@ -215,6 +222,10 @@ class Restaurant extends Model implements HasMedia
     public function drivers()
     {
         return $this->belongsToMany(\App\Models\User::class, 'driver_restaurants');
+    }
+
+    public function tags(){
+        return $this->belongsToMany(\App\Models\Tag::class,'restaurant_tag');
     }
 
     

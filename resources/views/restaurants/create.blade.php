@@ -219,4 +219,21 @@
     //alert(mySubString+"and"+str1+"and"+str2);
     }
   </script>
+  <script>
+    $('#checkboxfee').change(function(){
+    if ($('#checkboxfee').is(':checked') == true){
+        $('#feetext').val('0').prop('disabled', true);
+    } else {
+        $('#feetext').val('0').prop('disabled', false);
+    }
+});
+  </script>
+
+<script>
+  $('#input_starttime').pickatime({
+// 12 or 24 hour
+twelvehour: true,
+});
+</script>
+
 @endpush

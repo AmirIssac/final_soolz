@@ -12,6 +12,9 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use Illuminate\Support\Facades\Response;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Flash;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /**
  * Class FoodOrderController
@@ -68,5 +71,25 @@ class FoodOrderAPIController extends Controller
         }
 
         return $this->sendResponse($foodOrder->toArray(), 'Food Order retrieved successfully');
+    }
+
+    public function getFoodOrderById($id,$lang){   //test
+        $food = $this->foodOrderRepository->findWithoutFail($id);
+        //return response()->json($food); true statement too
+        //$current_lang =  LaravelLocalization::getCurrentLocale();
+        if($lang == 'en')
+        return $this->sendResponse($food->toArray(), 'Food Order retrieved successfully in english');
+        else
+        return $this->sendResponse($food->toArray(), 'Food Order retrieved successfully in arabic');
+    }
+
+    public function changeLangTo($lang){     //test
+    /*LaravelLocalization::setLocale('ar');
+    App::setLocale('ar');
+    App::setLocale('ar');
+    Session::put('locale', 'ar');
+    LaravelLocalization::setLocale('ar');*/
+    App::setlocale($lang);
+    return response()->json(App::getLocale());
     }
 }

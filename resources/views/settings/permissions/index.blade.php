@@ -14,6 +14,12 @@
                     <a class="nav-link active" href="{!! route('permissions.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.permission_table')}}</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{!! route('show.all.roles') !!}"><i class="fa fa-edit mr-2"></i>(new)تغيير الصلاحيات للأدوار</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{!! route('show.all.users.to.edit.permissions') !!}"><i class="fa fa-edit mr-2"></i>(new)تغيير الصلاحيات للمستخدمين</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{!! route('permissions.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.permission_create')}}</a>
                 </li>
                 <li class="nav-item">

@@ -77,4 +77,104 @@
     Dropzone.autoDiscover = false;
     var dropzoneFields = [];
 </script>
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+<script>
+  // validate coordinate
+  function validateCoordinate(lon,lat){
+    //alert(lon+"and"+lat);
+    var lonNum = parseFloat(lon); // convert from string to float
+    var latNum = parseFloat(lat); // convert from string to float
+    /*if (typeof map != 'undefined') {
+          map.setTarget(null);
+          delete ol;
+    }*/
+    var map = new ol.Map({
+    target: 'map',
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()    // open street map
+      })
+    ],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([lonNum, latNum]),
+      zoom: 16
+    })
+  });
+  var layer = new ol.layer.Vector({
+     source: new ol.source.Vector({
+         features: [
+             new ol.Feature({
+                 geometry: new ol.geom.Point(ol.proj.fromLonLat([lonNum, latNum]))
+             })
+         ]
+     })
+ });
+ map.addLayer(layer);
+ var container = document.getElementById('popup');
+ var content = document.getElementById('popup-content');
+ var closer = document.getElementById('popup-closer');
+
+ var overlay = new ol.Overlay({
+     element: container,
+     autoPan: true,
+     autoPanAnimation: {
+         duration: 250
+     }
+ });
+ map.addOverlay(overlay);
+
+ closer.onclick = function() {
+     overlay.setPosition(undefined);
+     closer.blur();
+     return false;
+ };
+ map.on('singleclick', function (event) {
+     if (map.hasFeatureAtPixel(event.pixel) === true) {
+         var coordinate = event.coordinate;
+
+         content.innerHTML = '<b>موقعي</b>';
+         overlay.setPosition(coordinate);
+     } else {
+         overlay.setPosition(undefined);
+         closer.blur();
+     }
+ });
+ // disable the validating button
+ const btn = document.getElementById('validatebtn');
+ btn.disabled= true;
+  }
+  </script>
+
+
+  <script>
+    function confirmMapLink(){
+      
+    //var  url='https://www.google.com/maps/place/Space+Needle/@47.620506,-122.349277,17z/data=!4m6!1m3!3m2!1s0x5490151f4ed5b7f9:0xdb2ba8689ed0920d!2sSpace+Needle!3m1!1s0x5490151f4ed5b7f9:0xdb2ba8689ed0920d';
+    //var url ="https://www.google.com/maps/place/24%C2%B037'07.9%22N+46%C2%B039'10.9%22E/@24.6188611,46.6552165,17z/data=!3m1!4b1!4m6!3m5!1s0!7e2!8m2!3d24.6188541!4d46.6530354";
+    var url = document.getElementById("maplink").value;
+    var mySubString = url.substring(    // both long and lat
+    url.lastIndexOf("@") + 1, 
+    url.lastIndexOf(",")
+    );
+    var lat = mySubString.substring(    // lat
+      0, 
+      mySubString.lastIndexOf(",")
+    );
+    var long = mySubString.substring(   // long
+      mySubString.lastIndexOf(",")+1 
+    );
+    document.getElementById("long").value = long;
+    document.getElementById("lat").value = lat;
+    //alert(mySubString+"and"+str1+"and"+str2);
+    }
+  </script>
+  <script>
+    $('#checkboxfee').change(function(){
+    if ($('#checkboxfee').is(':checked') == true){
+        $('#feetext').val('0').prop('disabled', true);
+    } else {
+        $('#feetext').val('0').prop('disabled', false);
+    }
+});
+  </script>
 @endpush

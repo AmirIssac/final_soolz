@@ -18,7 +18,8 @@
 <div class="form-group row ">
     {!! Form::label('users[]', trans("lang.restaurant_users"),['class' => 'col-3 control-label text-right']) !!}
     <div class="col-9">
-        {!! Form::select('users[]', $user, $usersSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+       {!! Form::select('users[]', $user, $usersSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+      {{--  {!! Form::select('users[]', $user, old('users'), ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!} --}}
         <div class="form-text text-muted">{{ trans("lang.restaurant_users_help") }}</div>
     </div>
 </div>
@@ -37,10 +38,12 @@
     <div class="form-group row ">
         {!! Form::label('delivery_fee', trans("lang.restaurant_delivery_fee"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::number('delivery_fee', 0,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_delivery_fee_placeholder")]) !!}
+            {!! Form::number('delivery_fee', old('delivery_fee'),  ['class' => 'form-control','id'=>'feetext' ,'placeholder'=>  trans("lang.restaurant_delivery_fee_placeholder")]) !!}
+            <input type="checkbox" name="deliveryf" id="checkboxfee"><label> &nbsp; الغاء رسوم التوصيل</label>
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_delivery_fee_help") }}
             </div>
+            
         </div>
     </div>
 
@@ -48,12 +51,49 @@
     <div class="form-group row ">
         {!! Form::label('admin_commission', trans("lang.restaurant_admin_commission"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::number('admin_commission', 0,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_admin_commission_placeholder")]) !!}
+            {!! Form::number('admin_commission', old('admin_commission'),  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_admin_commission_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_admin_commission_help") }}
             </div>
         </div>
     </div>
+
+    <!-- payment methods -->
+    <div class="form-group row ">
+        {!! Form::label('payment methods', "طرق الدفع", ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+           {{-- {!! Form::checkbox('paymentmethodonline',1,'checked',  ['class' => 'form-control']) !!} --}}
+            {{--<input type="checkbox" name="paymentmethodonline" value="1" checked>--}}
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('online_payment_check', 0) !!} {{-- if you not chose checkbox it will take 0 value --}}
+                    {!! Form::checkbox('online_payment_check', 1, null) !!}
+                    &nbsp;الدفع أون لاين
+                </label>
+            </div>
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('cash_payment_check', 0) !!}
+                    {!! Form::checkbox('cash_payment_check', 1, null) !!}
+                    &nbsp;الدفع نقدا
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- time methods -->
+    <div class="form-group row ">
+        <label class="col-3 control-label text-right"> ساعة بدء العمل </label>
+        <div class="col-9">
+            {!! Form::time('start_at', old('start_at'), ['class' => 'form-control']) !!}
+        </div>
+        <label class="col-3 control-label text-right mt-3"> ساعة اغلاق المطعم </label>
+        <div class="col-9 mt-3">
+            {!! Form::time('end_at', old('end_at'), ['class' => 'form-control']) !!}
+        </div>
+    </div>
+
+
 @endhasrole
 
 <!-- Phone Field -->
@@ -258,18 +298,38 @@
 
 <!-- Description Field -->
     <div class="form-group row ">
-        {!! Form::label('description', trans("lang.restaurant_description"), ['class' => 'col-3 control-label text-right']) !!}
+      {{--  {!! Form::label('description', trans("lang.restaurant_description"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::textarea('description', 'null', ['class' => 'form-control','placeholder'=>
+            {!! Form::textarea('description', old('description'), ['class' => 'form-control','placeholder'=>
              trans("lang.restaurant_description_placeholder")  ]) !!}
-            <div class="form-text text-muted">{{ trans("lang.restaurant_description_help") }}</div>
+            <div class="form-text text-muted">{{ trans("lang.restaurant_description_help") }}</div> --}}
+            {!! Form::label('tags','الكلمات المفتاحية', ['class' => 'col-3 control-label text-right']) !!}
+            <div class="checkbox icheck">
+                <div style="background-color: #f1f1f1; margin-left:60px; color:#007bff;  filter:drop-shadow(0px 1px 2px #2d3e4f)">
+                @foreach($tags as $tag)
+                <label class="col-9 ml-2 form-check-inline">
+                    {{$tag->name_ar}}
+                    @if(isset($tagsON))    {{-- update form --}}
+                    {{-- tag in pivot table for this restaurant exist --}}
+                    @if($tagsON->contains('id', $tag->id))
+                    {!! Form::checkbox('tagsIDs[]', $tag->id,true) !!}
+                    @else
+                    {!! Form::checkbox('tagsIDs[]', $tag->id) !!}
+                    @endif
+                    @endif
+                    @if(!isset($tagsON))
+                    {!! Form::checkbox('tagsIDs[]', $tag->id) !!}    {{--  create form   --}}
+                    @endif
+                </label>
+                @endforeach
+                </div>
         </div>
     </div>
 <!-- Information Field -->
 <div class="form-group row ">
   {!! Form::label('information', trans("lang.restaurant_information"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::textarea('information', 'null', ['class' => 'form-control','placeholder'=>
+    {!! Form::textarea('information', old('information'), ['class' => 'form-control','placeholder'=>
      trans("lang.restaurant_information_placeholder")  ]) !!}
     <div class="form-text text-muted">{{ trans("lang.restaurant_information_help") }}</div>
   </div>
@@ -288,3 +348,10 @@
   <button type="submit" class="btn btn-{{setting('theme_color')}}" ><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.restaurant')}}</button>
   <a href="{!! route('restaurants.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>
+
+<script>
+    $('#input_starttime').pickatime({
+// 12 or 24 hour
+twelvehour: true,
+});
+</script>

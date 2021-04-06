@@ -233,7 +233,7 @@ class OrderAPIController extends Controller
                         $q->where('name', 'cashier');
                     }
             )->get();
-            
+                    
             foreach ($cashiers as $cashier){
                 Notification::send([$cashier], new NewOrder($order));
             }

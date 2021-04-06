@@ -9,8 +9,10 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use InfyOm\Generator\Utils\ResponseUtil;
 use Illuminate\Support\Facades\Response;
+use Spatie\Permission\Models\Role;
 
 class Controller extends BaseController
 {
@@ -57,7 +59,8 @@ class Controller extends BaseController
     public function showUsers(){
         //$users = User::where('rule_id','!=',1)->get();  // get all none admins users
         $users = User::all();
-        return view('layouts.submenu.users')->with(["users"=>$users]);
+        $roles = Role::all();
+        return view('layouts.submenu.users')->with(["users"=>$users,'roles'=>$roles]);
     }
     public function records(){
         return view('layouts.submenu.records');
@@ -83,29 +86,23 @@ class Controller extends BaseController
         return view('layouts.submenu.map');
     } */
 
-    public function makeAdmin($id){
+    /*public function makeAdmin($id){
         $user = User::find($id);
         $role = array('admin');
         $user->assignRole($role);
         return back()->with('success','تم منح سماحية المشرف بنجاح');
-    }
-    public function makeCashier($id){
+    }*/
+    public function addRole(Request $request , $id){
         $user = User::find($id);
-        $role = array('cashier');
+        $role = $request->role;
         $user->assignRole($role);
-        return back()->with('success','تم منح سماحية الكاشير بنجاح');
+        return back()->with('successAdd',' تم منح سماحية  '.$role.' بنجاح ');
     }
-    public function makeDriver($id){
+    public function revokeRole(Request $request , $id){
         $user = User::find($id);
-        $role = array('driver');
-        $user->assignRole($role);
-        return back()->with('success','تم منح سماحية السائق بنجاح');
-    }
-    public function makeClient($id){
-        $user = User::find($id);
-        $role = array('client');
-        $user->assignRole($role);
-        return back()->with('success','تم منح سماحية الزبون بنجاح');
+        $role = $request->role;
+        $user->removeRole($role);
+        return back()->with('successRevoke',' تم سحب سماحية  '.$role.' بنجاح ');
     }
 
 }
