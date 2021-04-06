@@ -1,13 +1,4 @@
 
-<ul class="nav nav-tabs">
-@foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
-        <li style="padding: 5px;" class="nav-item">
-            <a rel="alternate" hreflang="{{ $localeCode }}" href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
-                {{ $properties['native'] }}
-            </a>
-        </li>
-    @endforeach
-</ul>
 @can('dashboard') 
     <li class="nav-item">
         <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" href="{!! url('dashboard') !!}">@if($icons)

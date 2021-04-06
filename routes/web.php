@@ -19,11 +19,11 @@ Auth::routes();
 
 
 // mcamara
-Route::group(
+/*Route::group(
     [
         'prefix' => LaravelLocalization::setLocale(),
         'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
-    ], function(){
+    ], function(){*/
 
 
 
@@ -198,4 +198,4 @@ Route::post('edit/permissions/for/user/{userid}','PermissionsChangeController@ed
 
 Route::resource('/tags','TagController');
 
-    });
+    //});
