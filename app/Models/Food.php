@@ -185,11 +185,15 @@ class Food extends Model implements HasMedia
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function extras()
+    /*public function extras()
     {
         return $this->hasMany(\App\Models\Extra::class, 'food_id');
-    }
+    }*/
 
+
+    public function extras(){
+        return $this->belongsToMany(\App\Models\Extra::class,'extra_food');
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/

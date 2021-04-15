@@ -36,7 +36,8 @@ class Order extends Model
         'delivery_fee',
         'order_time',
         'order_discount',
-        'driver_id'
+        'driver_id',
+        'restaurant_id'
     ];
 
     /**
@@ -145,5 +146,11 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id');
     }
+
+    public function restaurant()
+    {
+        return $this->belongsTo(\App\Models\Restaurant::class);
+    }
+
     
 }

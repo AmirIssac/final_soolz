@@ -15,6 +15,8 @@ use App\Repositories\FoodOrderRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\FoodOrder;
+use App\Repositories\FoodRepository;
 use App\Repositories\PaymentRepository;
 use App\Repositories\UserRepository;
 use Braintree\Gateway;
@@ -48,7 +50,9 @@ class OrderAPIController extends Controller
     /** @var  NotificationRepository */
     private $notificationRepository;
 
-    public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository)
+    private $foodRepository;
+
+    public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository,FoodRepository $foodRepo)
     {
         $this->orderRepository = $orderRepo;
         $this->foodOrderRepository = $foodOrderRepository;
@@ -56,6 +60,7 @@ class OrderAPIController extends Controller
         $this->userRepository = $userRepository;
         $this->paymentRepository = $paymentRepo;
         $this->notificationRepository = $notificationRepo;
+        $this->foodRepository = $foodRepo;
     }
 
     /**
@@ -184,7 +189,8 @@ class OrderAPIController extends Controller
         $amount = 0;
         $total = 0;
         $total_price = 0;
-        $rest_id;
+        $restaurant_id = 0;
+        $foodOrdercreated =  Collect (new FoodOrder);
         // $point = new Point;
         try {
             $total =  \DB::table('app_settings')->select('value')->where('key','order_point_save')->get();
@@ -197,13 +203,20 @@ class OrderAPIController extends Controller
                 $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id','delivery_fee','order_discount','hint')
             );
 
+            
             foreach ($input['foods'] as $foodOrder) {
                 $foodOrder['order_id'] = $order->id;
                 $amount += $foodOrder['price'] * $foodOrder['quantity'];
                 // $total += $foodOrder['point'];
                 // $rest_id = $foodOrder['rest_id'];
-                $this->foodOrderRepository->create($foodOrder); 
+                $foodOrdercreated =  $this->foodOrderRepository->create($foodOrder); 
             }
+            //relationship with rest
+            $food = $this->foodRepository->model()::find($foodOrdercreated->food_id);
+            $rest = $food->restaurant;
+            $restaurant_id = $rest->id;
+            $this->orderRepository->update(['restaurant_id' => $restaurant_id], $order->id);
+
             // $total = $amount + $input['delivery_fee'];
             
             if($input['order_wallet'] > 0){

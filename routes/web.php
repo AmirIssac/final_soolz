@@ -105,7 +105,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('foods/remove-media', 'FoodController@removeMedia');
     Route::resource('foods', 'FoodController')->except([
-        'show'
+        'show','storeExtrasForFood'
     ]);
 
     Route::post('galleries/remove-media', 'GalleryController@removeMedia');
@@ -197,5 +197,8 @@ Route::get('show/user/permissions/to/edit/{userid}','PermissionsChangeController
 Route::post('edit/permissions/for/user/{userid}','PermissionsChangeController@editPermissionsForUser')->name('edit.permissions.for.user');
 
 Route::resource('/tags','TagController');
+
+Route::post('/add/extras/for/food/{id}','FoodController@storeExtrasForFood')->name('add.extras.for.food');
+Route::post('/add/foods/for/extra/{id}','ExtraController@storeFoodsForExtra')->name('add.foods.for.extra');
 
     //});

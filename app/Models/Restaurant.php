@@ -228,5 +228,15 @@ class Restaurant extends Model implements HasMedia
         return $this->belongsToMany(\App\Models\Tag::class,'restaurant_tag');
     }
 
+    public function extras(){
+        return $this->hasMany(\App\Models\Extra::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
+    }
+
+
     
 }

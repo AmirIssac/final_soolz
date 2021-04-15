@@ -36,10 +36,10 @@
     </div>
 <!-- delivery_fee Field -->
     <div class="form-group row ">
-        {!! Form::label('delivery_fee', trans("lang.restaurant_delivery_fee"), ['class' => 'col-3 control-label text-right']) !!}
+        {!! Form::label('delivery_fee', 'رسوم الخدمة', ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::number('delivery_fee', old('delivery_fee'),  ['class' => 'form-control','id'=>'feetext' ,'placeholder'=>  trans("lang.restaurant_delivery_fee_placeholder")]) !!}
-            <input type="checkbox" name="deliveryf" id="checkboxfee"><label> &nbsp; الغاء رسوم التوصيل</label>
+            {!! Form::number('delivery_fee', old('delivery_fee'),  ['class' => 'form-control','id'=>'feetext' ,'placeholder'=>  "تعديل مبلغ رسوم الخدمة"]) !!}
+            <input type="checkbox" name="deliveryf" id="checkboxfee"><label> &nbsp; الغاء رسوم الخدمة</label>
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_delivery_fee_help") }}
             </div>
@@ -325,6 +325,18 @@
                 </div>
         </div>
     </div>
+
+    <!-- available foods  -->
+    @if(isset($foods)) {{-- just for update showing this field --}}
+    <div class="form-group row ">
+        <label> الأطعمة المتوفرة </label>
+        <div class="col-9">
+            {!! Form::select('availableFoods', $foods, $availableFoods, ['multiple'=>'multiple','name'=>'availableFoods[]','class' => 'select2 form-control']) !!}
+        </div>
+    </div>
+    @endif
+
+
 <!-- Information Field -->
 <div class="form-group row ">
   {!! Form::label('information', trans("lang.restaurant_information"), ['class' => 'col-3 control-label text-right']) !!}

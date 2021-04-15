@@ -124,7 +124,29 @@ class FoodController extends Controller
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.food')]));
 
-        return redirect(route('foods.index'));
+       // return redirect(route('foods.index'));
+
+
+
+
+        $resid = $request->restaurant_id;
+        $res = $this->restaurantRepository->model()::find($resid);
+        $resname = $res->name;
+        $foodname = $request->name;
+        $foodid = $food->id;
+        $extras = $this->extraRepository->model()::where('restaurant_id',$resid)->get();
+        $extras = $extras->pluck('name','id');
+        return view('foods.add_extras')->with('extras',$extras)->with('resname',$resname)->with('foodname',$foodname)->with('foodid',$foodid);
+    }
+
+
+    public function storeExtrasForFood(Request $request,$id){
+        $food = $this->foodRepository->model()::find($id);
+        $extrasids = $request->extras;
+        $food->extras()->sync($extrasids);
+        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.food')]));
+
+       return redirect(route('foods.index'));
     }
 
     /**
@@ -340,4 +362,5 @@ class FoodController extends Controller
             Log::error($e->getMessage());
         }
     }
+
 }

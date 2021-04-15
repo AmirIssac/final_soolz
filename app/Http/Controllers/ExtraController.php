@@ -6,10 +6,12 @@ use App\DataTables\ExtraDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateExtraRequest;
 use App\Http\Requests\UpdateExtraRequest;
+use App\Models\Restaurant;
 use App\Repositories\ExtraRepository;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\UploadRepository;
 use App\Repositories\FoodRepository;
+use App\Repositories\RestaurantRepository;
 use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -35,14 +37,23 @@ class ExtraController extends Controller
      */
     private $foodRepository;
 
+
+    /**
+     * @var RestaurantRepository
+     */
+    private $restaurantRepository;
+
     public function __construct(ExtraRepository $extraRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo
-        , FoodRepository $foodRepo)
+        , FoodRepository $foodRepo , RestaurantRepository $resRepo)
     {
         parent::__construct();
         $this->extraRepository = $extraRepo;
         $this->customFieldRepository = $customFieldRepo;
         $this->uploadRepository = $uploadRepo;
         $this->foodRepository = $foodRepo;
+        
+
+        $this->restaurantRepository = $resRepo;
     }
 
     /**
@@ -69,12 +80,19 @@ class ExtraController extends Controller
             $food = $this->foodRepository->myFoods()->pluck('name', 'id');
         }
 
+
+        if(auth()->user()->hasRole('manager')){
+        $restaurants = auth()->user()->restaurants;
+        $restaurants = $restaurants->pluck('name','id');
+        }
+
+
         $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
         if ($hasCustomField) {
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('extras.create')->with("customFields", isset($html) ? $html : false)->with("food", $food);
+        return view('extras.create')->with("customFields", isset($html) ? $html : false)->with("food", $food)->with('restaurants',$restaurants);
     }
 
     /**
@@ -90,6 +108,11 @@ class ExtraController extends Controller
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
         try {
             $extra = $this->extraRepository->create($input);
+            // input in pivot table extra_food
+            /*$foods = $request->foods;
+            $extra->foods()->sync($foods);*/
+
+
             $extra->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
@@ -106,7 +129,26 @@ class ExtraController extends Controller
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.extra')]));
 
-        return redirect(route('extras.index'));
+        //return redirect(route('extras.index'));
+
+        $resid =$request->restaurant_id;
+        $res = $this->restaurantRepository->model()::find($resid);
+        $extraname = $extra->name;
+        $extraid = $extra->id;
+        $resname = $res->name;
+        $foods = $res->foods;
+        $foods = $foods->pluck('name','id');
+        return view('extras.add_foods')->with('resname',$resname)->with('extraname',$extraname)->with('foods',$foods)->with('extraid',$extraid);
+
+    }
+
+    public function storeFoodsForExtra(Request $request,$id){
+        $extra = $this->extraRepository->model()::find($id);
+        $foodsids = $request->foods;
+        $extra->foods()->sync($foodsids);
+        Flash::success(__('lang.saved_successfully', ['operator' => __('lang.food')]));
+
+       return redirect(route('extras.index'));
     }
 
     /**

@@ -82,13 +82,14 @@
   </div>
 </div>
 <!-- Extras Field -->
+{{--
 <div class="form-group row ">
   {!! Form::label('extras[]', trans("lang.extra_plural"),['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
       {!! Form::select('extras[]', $extras, $extraSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
       <div class="form-text text-muted">{{ trans("lang.extra_plural") }}</div>
   </div>
-</div>
+</div>--}}
 <!-- Discount Price Field -->
 <div class="form-group row ">
   {!! Form::label('discount_price', trans("lang.food_discount_price"), ['class' => 'col-3 control-label text-right']) !!}
@@ -124,11 +125,11 @@
 
 <!-- Weight Field -->
 <div class="form-group row ">
-  {!! Form::label('weight', trans("lang.food_weight"), ['class' => 'col-3 control-label text-right']) !!}
+  {!! Form::label('weight', 'السعرات الحرارية', ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
     {!! Form::number('weight', 0,  ['class' => 'form-control','placeholder'=>  trans("lang.food_weight_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
     <div class="form-text text-muted">
-      {{ trans("lang.food_weight_help") }}
+      {{ "أدخل السعرات الحرارية لهذا المنتج" }}
     </div>
   </div>
 </div>
@@ -169,11 +170,11 @@
 <div class="form-group row ">
   {!! Form::label('restaurant_id', trans("lang.food_restaurant_id"),['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::select('restaurant_id', $restaurant, null, ['class' => 'select2 form-control']) !!}
+    {!! Form::select('restaurant_id', $restaurant, null, ['class' => 'select2 form-control','id'=>'res']) !!}
     <div class="form-text text-muted">{{ trans("lang.food_restaurant_id_help") }}</div>
   </div>
 </div>
-
+  
 
 <!-- Category Id Field -->
 <div class="form-group row ">

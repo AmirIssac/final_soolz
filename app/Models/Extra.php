@@ -33,7 +33,8 @@ class Extra extends Model implements HasMedia
         'name',
         'description',
         'price',
-        'food_id'
+        //'food_id',
+        'restaurant_id'
     ];
 
     /**
@@ -56,10 +57,10 @@ class Extra extends Model implements HasMedia
      */
     public static $rules = [
         'name' => 'required',
-        'image' => 'required',
+        //'image' => 'required',
         'description' => 'required',
         'price' => 'required',
-        'food_id' => 'required|exists:foods,id'
+        //'food_id' => 'required|exists:foods,id'
     ];
 
     /**
@@ -137,9 +138,17 @@ class Extra extends Model implements HasMedia
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function food()
+   /* public function food()
     {
         return $this->belongsTo(\App\Models\Food::class, 'food_id', 'id');
+    } */
+
+    public function foods(){
+        return $this->belongsToMany(\App\Models\Food::class,'extra_food');
+    }
+
+    public function restaurant(){
+        return $this->belongsTo(\App\Models\Restaurant::class);
     }
 
     

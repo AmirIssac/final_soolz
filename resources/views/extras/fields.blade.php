@@ -94,16 +94,39 @@
   </div>
 </div>
 
-<!-- Food Id Field -->
+
+<!-- Restaurant -->
 <div class="form-group row ">
+  {!! Form::label('restaur', "المطعم", ['class' => 'col-3 control-label text-right']) !!}
+<div class="col-9">
+  {!! Form::select('restaurant_id', $restaurants, null, ['class' => 'select2 form-control']) !!}
+  <div class="form-text text-muted">
+    {{ "اختيار المطعم" }}
+  </div>
+</div>
+</div>
+
+
+<!-- Food Id Field -->
+{{--<div class="form-group row ">
   {!! Form::label('food_id', trans("lang.extra_food_id"),['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
     {!! Form::select('food_id', $food, null, ['class' => 'select2 form-control']) !!}
     <div class="form-text text-muted">{{ trans("lang.extra_food_id_help") }}</div>
   </div>
-</div>
+</div>--}}
+
+{{--
+<div class="form-group row ">
+  {!! Form::label('foods', trans("lang.extra_food_id"),['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    {!! Form::select('foods', $food, null, ['multiple'=>'multiple','name'=>'foods[]','class' => 'select2 form-control']) !!}
+    <div class="form-text text-muted">{{ trans("lang.extra_food_id_help") }}</div>
+  </div>
 
 </div>
+
+--}}
 @if($customFields)
 <div class="clearfix"></div>
 <div class="col-12 custom-field-container">

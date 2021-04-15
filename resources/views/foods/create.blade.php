@@ -47,6 +47,9 @@
         </li>
       </ul>
     </div>
+
+    
+
     <div class="card-body">
       {!! Form::open(['route' => 'foods.store']) !!}
       <div class="row">
@@ -72,4 +75,7 @@
     Dropzone.autoDiscover = false;
     var dropzoneFields = [];
 </script>
+<script>
+  <script src="{{asset('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
+  <script src="{{asset('js/ajax.js')}}">     {{--  ajax --}}
 @endpush

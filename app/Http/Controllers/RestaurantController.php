@@ -164,6 +164,12 @@ class RestaurantController extends Controller
         $tags = Tag::all();
         $tagsON = $restaurant->tags;
 
+        // available foods
+        $foods = $restaurant->foods;
+        $foods = $foods->pluck('name', 'id')->toArray();
+        $availableFoods = $this->foodRepository->model()::where('restaurant_id',$restaurant->id)->where('availability',1)->get();
+        $availableFoods = $availableFoods->pluck('id')->toArray();
+
         if (empty($restaurant)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
 
@@ -176,7 +182,7 @@ class RestaurantController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('restaurants.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('tags',$tags)->with('tagsON',$tagsON);
+        return view('restaurants.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('tags',$tags)->with('tagsON',$tagsON)->with('foods',$foods)->with('availableFoods',$availableFoods);
     }
     
         public function clone($id)
@@ -264,6 +270,21 @@ class RestaurantController extends Controller
             }
             else{
             $restaurant->tags()->sync($tagsids);}
+            
+            // update available foods
+            $foods = $restaurant->foods;
+            $availableArray = $request->availableFoods;
+            foreach($foods as $food){
+                if(in_array($food->id,$availableArray)){
+                    $food->availability = true;
+                    $food->save();
+                }
+                else{
+                    $food->availability = false;
+                    $food->save();
+                }
+            }
+
             $input['users'] = isset($input['users']) ? $input['users'] : [];
             $input['drivers'] = isset($input['drivers']) ? $input['drivers'] : [];
             if (isset($input['image']) && $input['image']) {

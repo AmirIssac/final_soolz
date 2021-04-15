@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Applicant;
+use App\Models\Extra;
 use App\Models\User;
+use App\Repositories\ExtraRepository;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -17,6 +19,8 @@ use Spatie\Permission\Models\Role;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    
     public function __construct(){
         // config(['app.timezone' => setting('timezone')]);
     }
@@ -104,5 +108,6 @@ class Controller extends BaseController
         $user->removeRole($role);
         return back()->with('successRevoke',' تم سحب سماحية  '.$role.' بنجاح ');
     }
+
 
 }

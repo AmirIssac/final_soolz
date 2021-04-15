@@ -19,8 +19,10 @@
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->
 </div>
-<!-- /.content-header -->
 
+
+
+<!-- /.content-header -->
 <div class="content">
   <div class="clearfix"></div>
   @include('flash::message')
