@@ -75,26 +75,18 @@
 <div class="form-group row ">
   {!! Form::label('price', trans("lang.food_price"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::number('price', 0,  ['class' => 'form-control','placeholder'=>  trans("lang.food_price_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
+    {!! Form::number('price', old('price'),  ['class' => 'form-control','placeholder'=>  trans("lang.food_price_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
     <div class="form-text text-muted">
       {{ trans("lang.food_price_help") }}
     </div>
   </div>
 </div>
-<!-- Extras Field -->
-{{--
-<div class="form-group row ">
-  {!! Form::label('extras[]', trans("lang.extra_plural"),['class' => 'col-3 control-label text-right']) !!}
-  <div class="col-9">
-      {!! Form::select('extras[]', $extras, $extraSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
-      <div class="form-text text-muted">{{ trans("lang.extra_plural") }}</div>
-  </div>
-</div>--}}
+
 <!-- Discount Price Field -->
 <div class="form-group row ">
   {!! Form::label('discount_price', trans("lang.food_discount_price"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::number('discount_price', 0,  ['class' => 'form-control','placeholder'=>  trans("lang.food_discount_price_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
+    {!! Form::number('discount_price', old('discount_price'),  ['class' => 'form-control','placeholder'=>  trans("lang.food_discount_price_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
     <div class="form-text text-muted">
       {{ trans("lang.food_discount_price_help") }}
     </div>
@@ -105,7 +97,7 @@
 <div class="form-group row ">
   {!! Form::label('description', trans("lang.food_description"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::textarea('description', 'null', ['class' => 'form-control','placeholder'=>
+    {!! Form::textarea('description', old('description'), ['class' => 'form-control','placeholder'=>
      trans("lang.food_description_placeholder")  ]) !!}
     <div class="form-text text-muted">{{ trans("lang.food_description_help") }}</div>
   </div>
@@ -117,7 +109,7 @@
 <div class="form-group row ">
   {!! Form::label('ingredients', trans("lang.food_ingredients"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::textarea('ingredients', 'null', ['class' => 'form-control','placeholder'=>
+    {!! Form::textarea('ingredients', old('ingredients'), ['class' => 'form-control','placeholder'=>
      trans("lang.food_ingredients_placeholder")  ]) !!}
     <div class="form-text text-muted">{{ trans("lang.food_ingredients_help") }}</div>
   </div>
@@ -127,7 +119,7 @@
 <div class="form-group row ">
   {!! Form::label('weight', 'السعرات الحرارية', ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::number('weight', 0,  ['class' => 'form-control','placeholder'=>  trans("lang.food_weight_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
+    {!! Form::number('weight', old('weight'),  ['class' => 'form-control','placeholder'=>  trans("lang.food_weight_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
     <div class="form-text text-muted">
       {{ "أدخل السعرات الحرارية لهذا المنتج" }}
     </div>
@@ -137,7 +129,7 @@
 <div class="form-group row ">
   {!! Form::label('point ', trans("lang.food_point"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::number('point', 0,  ['class' => 'form-control','placeholder'=>  trans("lang.food_point_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
+    {!! Form::number('point', old('point'),  ['class' => 'form-control','placeholder'=>  trans("lang.food_point_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
     <div class="form-text text-muted">
       {{ trans("lang.food_point_help") }}
     </div>
@@ -147,7 +139,7 @@
 <div class="form-group row ">
   {!! Form::label('total_point', trans("lang.food_total_point"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    {!! Form::number('total_point', 0,  ['class' => 'form-control','placeholder'=>  trans("lang.food_total_point_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
+    {!! Form::number('total_point', old('total_point'),  ['class' => 'form-control','placeholder'=>  trans("lang.food_total_point_placeholder"),'step'=>"0.01", 'min'=>"0"]) !!}
     <div class="form-text text-muted">
       {{ trans("lang.food_total_point_help") }}
     </div>
@@ -167,6 +159,7 @@
 
 
 <!-- Restaurant Id Field -->
+  @if(!isset($editCheck))
 <div class="form-group row ">
   {!! Form::label('restaurant_id', trans("lang.food_restaurant_id"),['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
@@ -174,7 +167,26 @@
     <div class="form-text text-muted">{{ trans("lang.food_restaurant_id_help") }}</div>
   </div>
 </div>
+@else
+<div class="form-group row ">
+  {!! Form::label('restaurant_id', trans("lang.food_restaurant_id"),['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    <input type="hidden" value="{{$restaurant->id}}" name="restaurant_id">
+    <span class="badge badge-primary"> {{$restaurant->name}}</span>
+  </div>
+</div>
+@endif
   
+<!-- Extras Field -->
+@if(isset($editCheck))
+<div class="form-group row ">
+  {!! Form::label('extras[]', 'الإضافات',['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+      {!! Form::select('extras[]', $extras, $extraSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+      <div class="form-text text-muted">{{ trans("lang.extra_plural") }}</div>
+  </div>
+</div>
+@endif
 
 <!-- Category Id Field -->
 <div class="form-group row ">

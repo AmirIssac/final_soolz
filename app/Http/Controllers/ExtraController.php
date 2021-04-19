@@ -187,11 +187,20 @@ class ExtraController extends Controller
 
             return redirect(route('extras.index'));
         }
-        if (auth()->user()->hasRole('admin')){
+        /*if (auth()->user()->hasRole('admin')){
             $food = $this->foodRepository->pluck('name', 'id');
         }else{
             $food = $this->foodRepository->myFoods()->pluck('name', 'id');
-        }
+        }*/
+        $res = $extra->restaurant;
+        if(isset($res->foods))
+        $foods = $res->foods->pluck('name','id'); // all foods for this restaurant
+        else
+        $foods=null;
+        $foodsSelected = $extra->foods;
+
+
+
         $customFieldsValues = $extra->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
         $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
@@ -199,7 +208,7 @@ class ExtraController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('extras.edit')->with('extra', $extra)->with("customFields", isset($html) ? $html : false)->with("food", $food);
+        return view('extras.edit')->with('extra', $extra)->with("customFields", isset($html) ? $html : false)->with("foods", $foods)->with('foodsSelected',$foodsSelected);
     }
 
     /**
@@ -222,6 +231,8 @@ class ExtraController extends Controller
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
         try {
             $extra = $this->extraRepository->update($input, $id);
+
+            $extra->foods()->sync($request->foodsids);
 
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);

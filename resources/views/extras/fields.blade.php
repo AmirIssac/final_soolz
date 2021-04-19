@@ -14,7 +14,7 @@
 </div>
 
 <!-- Image Field -->
-<div class="form-group row">
+{{--<div class="form-group row">
   {!! Form::label('image', trans("lang.extra_image"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
     <div style="width: 100%" class="dropzone image" id="image" data-field="image">
@@ -25,7 +25,7 @@
       {{ trans("lang.extra_image_help") }}
     </div>
   </div>
-</div>
+</div>--}}
 @prepend('scripts')
 <script type="text/javascript">
     var var1567114747144268319ble = '';
@@ -72,7 +72,7 @@
 @endprepend
 
 <!-- Description Field -->
-<div class="form-group row ">
+{{--<div class="form-group row ">
   {!! Form::label('description', trans("lang.extra_description"), ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
     {!! Form::textarea('description', null, ['class' => 'form-control','placeholder'=>
@@ -81,7 +81,7 @@
   </div>
 </div>
 </div>
-<div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
+<div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">--}}
 
 <!-- Price Field -->
 <div class="form-group row ">
@@ -96,6 +96,7 @@
 
 
 <!-- Restaurant -->
+@if(isset($restaurants))     {{-- for add not for edit --}}
 <div class="form-group row ">
   {!! Form::label('restaur', "المطعم", ['class' => 'col-3 control-label text-right']) !!}
 <div class="col-9">
@@ -105,8 +106,16 @@
   </div>
 </div>
 </div>
-
-
+@endif
+<!--foods--> {{-- just in edit form --}}
+@if(isset($foods))
+<div class="form-group row ">
+  {!! Form::label('foods[]', 'الوجبات',['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+      {!! Form::select('foodsids[]', $foods, $foodsSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+      <div class="form-text text-muted">الوجبات التابعة لهذه الإضافة</div>
+  </div>
+  @endif
 <!-- Food Id Field -->
 {{--<div class="form-group row ">
   {!! Form::label('food_id', trans("lang.extra_food_id"),['class' => 'col-3 control-label text-right']) !!}

@@ -45,14 +45,15 @@
   <label> التابعة لمطعمك <strong>{{$resname}}</strong> </label>
   <div>
   {!! Form::select('foods', $foods, null, ['multiple'=>'multiple','name'=>'foods[]','class' => 'select2 form-control']) !!}
+  <div class="form-text text-muted">انقر هنا لتحديد المنتجات</div>
   </div>
   <div style="margin-top: 10px">
-  <button style="width:100px !important;" type="submit" class="btn btn-primary"> اضافة </button>
+  <button style="width:100px !important;" type="submit" class="btn btn-primary"> حفظ </button>
   </div>
 </form>
-<div style="margin-top: 10px">
+{{--<div style="margin-top: 10px">
 <a style="width:100px !important;" role="button" class="btn btn-danger" href="{{route('foods.index')}}"> الغاء </a>
-</div>
+</div>--}}
 </div>
 
 

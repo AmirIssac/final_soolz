@@ -50,11 +50,20 @@ class ExtraDataTable extends DataTable
      */
     public function query(Extra $model)
     {
-        if (auth()->user()->hasRole('admin')) {
+        /*if (auth()->user()->hasRole('admin')) {
             return $model->newQuery()->with("food")->select('extras.*');
         } else {
             return $model->newQuery()->with("food")
                 ->join("foods","foods.id","=","extras.food_id")
+                ->join("user_restaurants", "user_restaurants.restaurant_id", "=", "foods.restaurant_id")
+                ->where('user_restaurants.user_id', auth()->id())
+                ->select('extras.*');
+        }*/
+        if (auth()->user()->hasRole('admin')) {
+            return $model->newQuery()->with("foods")->select('extras.*');
+        } else {
+            return $model->newQuery()->with("foods")
+                ->join("foods","foods.id","=","extra_food.food_id")
                 ->join("user_restaurants", "user_restaurants.restaurant_id", "=", "foods.restaurant_id")
                 ->where('user_restaurants.user_id', auth()->id())
                 ->select('extras.*');

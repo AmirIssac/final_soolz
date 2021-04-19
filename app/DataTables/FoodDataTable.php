@@ -57,7 +57,15 @@ class FoodDataTable extends DataTable
     public function query(Food $model)
     {
 
-        if (auth()->user()->hasRole('admin')) {
+       /* if (auth()->user()->hasRole('admin')) {
+            return $model->newQuery()->with("restaurant")->with("category")->select('foods.*')->orderBy('foods.updated_at','desc');
+        } else {
+            return $model->newQuery()->with("restaurant")->with("category")
+                ->join("user_restaurants", "user_restaurants.restaurant_id", "=", "foods.restaurant_id")
+                ->where('user_restaurants.user_id', auth()->id())
+                ->select('foods.*')->orderBy('foods.updated_at','desc');
+        }*/
+        if(auth()->user()->hasRole('admin')) {
             return $model->newQuery()->with("restaurant")->with("category")->select('foods.*')->orderBy('foods.updated_at','desc');
         } else {
             return $model->newQuery()->with("restaurant")->with("category")
@@ -65,6 +73,7 @@ class FoodDataTable extends DataTable
                 ->where('user_restaurants.user_id', auth()->id())
                 ->select('foods.*')->orderBy('foods.updated_at','desc');
         }
+
     }
 
     /**
@@ -117,7 +126,7 @@ class FoodDataTable extends DataTable
             ],
             [
                 'data' => 'weight',
-                'title' => trans('lang.food_weight'),
+                'title' => 'السعرات الحرارية',
 
             ],
             [

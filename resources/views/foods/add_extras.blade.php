@@ -37,7 +37,7 @@
 
 
 <!-- add extras to specific food of specific restaurant -->
-<div style="margin-left: 50pxك display:flex; flex-direction:column;" class="form-group row">
+<div style="margin-left: 100px; display:flex; flex-direction:column;" class="form-group row">
 <form  action="{{route('add.extras.for.food',$foodid)}}" method="POST">
   @csrf
   <label> هل تريد اضافة اضافات لهذا المنتج <strong>{{$foodname}}</strong>  </label>
@@ -45,14 +45,15 @@
   <label> التابع لمطعمك <strong>{{$resname}}</strong> </label>
   <div>
   {!! Form::select('extras', $extras, null, ['multiple'=>'multiple','name'=>'extras[]','class' => 'select2 form-control']) !!}
+  <div class="form-text text-muted">انقر هنا لتحديد الإضافات</div>
   </div>
   <div style="margin-top: 10px">
-  <button style="width:100px !important;" type="submit" class="btn btn-primary"> اضافة </button>
+  <button style="width:100px !important;" type="submit" class="btn btn-primary"> حفظ </button>
   </div>
 </form>
-<div style="margin-top: 10px">
+{{--<div style="margin-top: 10px">
 <a style="width:100px !important;" role="button" class="btn btn-danger" href="{{route('foods.index')}}"> الغاء </a>
-</div>
+</div>--}}
 </div>
 
 

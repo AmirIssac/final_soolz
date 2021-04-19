@@ -31,7 +31,7 @@ class Extra extends Model implements HasMedia
 
     public $fillable = [
         'name',
-        'description',
+        //'description',
         'price',
         //'food_id',
         'restaurant_id'
@@ -58,7 +58,7 @@ class Extra extends Model implements HasMedia
     public static $rules = [
         'name' => 'required',
         //'image' => 'required',
-        'description' => 'required',
+        //'description' => 'required',
         'price' => 'required',
         //'food_id' => 'required|exists:foods,id'
     ];

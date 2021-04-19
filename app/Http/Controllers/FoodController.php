@@ -185,13 +185,17 @@ class FoodController extends Controller
             return redirect(route('foods.index'));
         }
         $category = $this->categoryRepository->pluck('name', 'id');
-        if (auth()->user()->hasRole('admin')){
+       /* if (auth()->user()->hasRole('admin')){
             $restaurant = $this->restaurantRepository->pluck('name', 'id');
         }else{
             $restaurant = $this->restaurantRepository->myRestaurants()->pluck('name', 'id');
-        }
-        $extras = $this->extraRepository->pluck('name', 'id');
-        $extraSelected = $food->extras()->pluck('id')->toArray();
+        }*/
+        $restaurant = $food->restaurant;
+        $editCheck = true;
+
+        //$extras = $this->extraRepository->pluck('name', 'id');
+        $extras = $restaurant->extras->pluck('name', 'id');
+        $extraSelected = $food->extras()->pluck('extras.id')->toArray();
         $customFieldsValues = $food->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
         $hasCustomField = in_array($this->foodRepository->model(), setting('custom_field_models', []));
@@ -199,7 +203,7 @@ class FoodController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('foods.edit')->with('food', $food)->with("extras", $extras->reverse())->with("extraSelected", $extraSelected)->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("category", $category);
+        return view('foods.edit')->with('food', $food)->with("extras", $extras->reverse())->with("extraSelected", $extraSelected)->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("category", $category)->with('editCheck',$editCheck);
     }
 
     /**
@@ -259,6 +263,9 @@ class FoodController extends Controller
 
         try {
             $food = $this->foodRepository->update($input, $id);
+
+            $food->extras()->sync($request->extras);
+
             if (isset($input['image']) && $input['image']) {
                 $cacheUpload = $this->uploadRepository->getByUuid($input['image']);
                 
