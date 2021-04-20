@@ -61,10 +61,9 @@ class FoodAPIController extends Controller
             return $this->sendError($e->getMessage());
         }
         $foods = $this->foodRepository->all();
-
         return $this->sendResponse($foods->toArray(), 'Foods retrieved successfully');
     }
-
+ 
     /**
      * Display the specified Food.
      * GET|HEAD /foods/{id}
@@ -90,7 +89,7 @@ class FoodAPIController extends Controller
             return $this->sendError('Food not found');
         }
 
-        return $this->sendResponse($food->toArray(), 'Food retrieved successfully');
+        return $this->sendResponse(['food'=>$food->toArray(),'extras'=>$food->extras->toArray()], 'Food retrieved successfully');
     }
     
     public function getfoodsbypoint()

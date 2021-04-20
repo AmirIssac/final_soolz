@@ -98,7 +98,7 @@ class RestaurantAPIController extends Controller
             return $this->sendError('Restaurant not found');
         }
 
-        return $this->sendResponse($restaurant->toArray(), 'Restaurant retrieved successfully');
+        return $this->sendResponse(['restaurant'=>$restaurant->toArray(),'tags'=>$restaurant->tags->toArray()], 'Restaurant retrieved successfully');
     }
 
     /**
