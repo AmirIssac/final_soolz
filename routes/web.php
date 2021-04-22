@@ -201,4 +201,9 @@ Route::resource('/tags','TagController');
 Route::post('/add/extras/for/food/{id}','FoodController@storeExtrasForFood')->name('add.extras.for.food');
 Route::post('/add/foods/for/extra/{id}','ExtraController@storeFoodsForExtra')->name('add.foods.for.extra');
 
+Route::get('search/order','OrderController@indexSearch')->name('search.order');
+Route::get('make/search/order','OrderController@makeSearch')->name('make.search.order');
+Route::get('clients','UserController@clients')->name('clients');
+Route::get('clients/details/{id}','UserController@clientsMoreDetails')->name('clients.details');
+
     //});

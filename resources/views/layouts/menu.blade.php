@@ -150,6 +150,9 @@
                         <a class="nav-link {{ Request::is('deliveryAddresses*') ? 'active' : '' }}" href="{!! route('deliveryAddresses.index') !!}">@if($icons)<i class="nav-icon fa fa-map"></i>@endif<p>{{trans('lang.delivery_address_plural')}}</p></a>
                     </li>
                 @endcan
+                <li class="nav-item">
+                    <a class="nav-link" href="{!! route('search.order') !!}">@if($icons)<i class="nav-icon fa fa-search"></i>@endif<p>البحث برقم الطلب للعميل</p></a>
+                </li>
 
         </ul>
     </li>
@@ -159,6 +162,13 @@
                     <a class="nav-link {{ Request::is('records*') ? 'active' : '' }} " href="{{route('records')}}">@if($icons)
                     <i class="nav-icon fa fa-sticky-note"></i>@endif
                           <p>التقارير </p></a>
+        </li>
+@endcan
+@can('dashboard')
+        <li class="nav-item">
+                    <a class="nav-link {{ Request::is('clients*') ? 'active' : '' }} " href="{{route('clients')}}">@if($icons)
+                    <i class="nav-icon fa fa-users"></i>@endif
+                          <p>العملاء </p></a>
         </li>
 @endcan
 @can('faqs.index')

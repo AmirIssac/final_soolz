@@ -10,6 +10,7 @@ use App\DataTables\OrderDataTable;
 use App\Events\OrderChangedEvent;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Order;
 use App\Notifications\AssignedOrder;
 use App\Notifications\StatusChangedOrder;
 use App\Repositories\CustomFieldRepository;
@@ -290,6 +291,25 @@ class OrderController extends Controller
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+        }
+    }
+
+    public function indexSearch(){
+        return view('client_orders.index_search');
+    }
+    public function makeSearch(Request $request){
+        $id = $request->order_id;
+        $order = $this->orderRepository->model()::find($id);
+        if(!$order){
+            $noOrderFound = 1;
+            return view('client_orders.index_search')->with('noOrderFound',$noOrderFound);
+        }
+        else{
+        $user = $order->user;
+        $order_status = $order->orderStatus;
+        $payment = $order->payment;
+        $restaurant = $order->restaurant;
+        return view('client_orders.index_search')->with(['order'=>$order,'user'=>$user,'order_status'=>$order_status,'payment'=>$payment,'restaurant'=>$restaurant]);
         }
     }
 }

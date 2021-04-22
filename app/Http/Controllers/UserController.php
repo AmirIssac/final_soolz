@@ -6,11 +6,16 @@ use App\DataTables\UserDataTable;
 use App\Events\UserRoleChangedEvent;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Order;
+use App\Models\User;
 use App\Repositories\CustomFieldRepository;
+use App\Repositories\OrderRepository;
+use App\Repositories\PaymentRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
 use Flash;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -33,14 +38,19 @@ class UserController extends Controller
      */
     private $customFieldRepository;
 
+    private $orderRepository;
+    private $paymentRepository;
+
     public function __construct(UserRepository $userRepo, RoleRepository $roleRepo, UploadRepository $uploadRepo,
-                                CustomFieldRepository $customFieldRepo)
+                                CustomFieldRepository $customFieldRepo, OrderRepository $orderRepository,PaymentRepository $paymentRepository)
     {
         parent::__construct();
         $this->userRepository = $userRepo;
         $this->roleRepository = $roleRepo;
         $this->uploadRepository = $uploadRepo;
         $this->customFieldRepository = $customFieldRepo;
+        $this->orderRepository = $orderRepository;
+        $this->paymentRepository = $paymentRepository;
     }
 
     /**
@@ -321,5 +331,26 @@ class UserController extends Controller
                 }
             }
         }
+    }
+
+    public function clients(){
+        $clients = User::whereHas("roles", function($q){ $q->where("name", "client"); })->orderBy('point','desc')->get();
+        /*$users = $this->userRepository->model()::all();
+        foreach($users as $user){
+            if($user->hasRole('client'))
+                $clients = $clients->toBase()->merge($user);
+        }*/
+        return view('layouts.submenu.clients')->with(['clients'=>$clients]);
+    }
+    public function clientsMoreDetails($id){
+        $user = User::find($id);
+        $orders = $this->orderRepository->model()::where('user_id',$id)->get();
+        $orders_count = $orders->count();
+        $payments = $this->paymentRepository->model()::where('user_id',$id)->get();
+        $prices = 0.00;
+        foreach($payments as $payment){
+            $prices += $payment->price;
+        }
+        return view('layouts.submenu.clients_details')->with(['user'=>$user,'orders_count'=>$orders_count,'prices'=>$prices]);
     }
 }
