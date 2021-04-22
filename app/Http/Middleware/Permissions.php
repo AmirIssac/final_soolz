@@ -21,7 +21,9 @@ class Permissions
         'PayPalController',
         'Controller',
         'PermissionsChangeController',
-        'TagController'
+        'TagController',
+        'UserController',
+        'OrderController'
     ];
 
     /**
